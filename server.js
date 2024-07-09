@@ -1,5 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
+
+const connectDB = require("./utils/connectDB");
 
 const errorHandlerMiddleware = require("./middleware/error-handler");
 const notFoundMiddleware = require("./middleware/not-found");
@@ -17,6 +20,7 @@ const port = process.env.PORT || 3000;
 
 const server = async () => {
   try {
+    await connectDB();
     app.listen(port, console.log("Server is running"));
   } catch (error) {
     console.log(error);
