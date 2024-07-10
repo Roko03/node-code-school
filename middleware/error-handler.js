@@ -15,7 +15,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
 
   if (err.code && err.code === 11000) {
     customError.statusCode = 400;
-    customError.message = "Korisnik sa tim emailom već postoji";
+    customError.message = "Korisnik sa unesenim imenom ili emailom već postoji";
   }
 
   return res
