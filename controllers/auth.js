@@ -6,6 +6,7 @@ const {
   BadRequestError,
   UnauthenticatedError,
   CustomAPIError,
+  NotFoundError,
 } = require("../errors");
 const jwt = require("jsonwebtoken");
 
@@ -99,8 +100,25 @@ const updateToken = async (req, res) => {
   );
 };
 
+const logout = async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    throw new BadRequestError("Potreban vam je token");
+  }
+
+  const token = await Session.findOneAndDelete({ session_data: refreshToken });
+
+  if (!token) {
+    throw new NotFoundError("Token ne postoji");
+  }
+
+  res.status(StatusCodes.OK).json({ message: "Token uspješno izbrisan" });
+};
+
 module.exports = {
   register,
   login,
   updateToken,
+  logout,
 };
