@@ -5,8 +5,8 @@ const { StatusCodes } = require("http-status-codes");
 const {
   BadRequestError,
   UnauthenticatedError,
-  CustomAPIError,
   NotFoundError,
+  ForbiddenError,
 } = require("../errors");
 const jwt = require("jsonwebtoken");
 
@@ -82,9 +82,7 @@ const updateToken = async (req, res) => {
     process.env.REFRESH_TOKEN_SECRET,
     async (err, payload) => {
       if (err) {
-        res
-          .status(StatusCodes.FORBIDDEN)
-          .json({ message: "Ključ nije valjan" });
+        throw new ForbiddenError("Ključ nije valjan");
       }
 
       const user = await User.findOne({ _id: payload.userId });
