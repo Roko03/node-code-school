@@ -1,14 +1,26 @@
 const { StatusCodes } = require("http-status-codes");
-const CustomAPIError = require("../errors/custom-error");
 
 const errorHandlerMiddleware = (err, req, res, next) => {
-  if (err instanceof CustomAPIError) {
-    return res.status(err.statusCode).json({ message: err.message });
+  const customError = {
+    statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+    message: err.message || "Something went wrong",
+  };
+
+  if (err.name === "ValidationError") {
+    customError.message = Object.values(err.errors)
+      .map((item) => item.message)
+      .join(",");
+    customError.statusCode = 400;
+  }
+
+  if (err.code && err.code === 11000) {
+    customError.statusCode = 400;
+    customError.message = "Korisnik sa unesenim imenom ili emailom već postoji";
   }
 
   return res
-    .status(StatusCodes.INTERNAL_SERVER_ERROR)
-    .json({ message: "Something went wrong" });
+    .status(customError.statusCode)
+    .json({ message: customError.message });
 };
 
 module.exports = errorHandlerMiddleware;
