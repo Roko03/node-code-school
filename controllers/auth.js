@@ -113,7 +113,7 @@ const logout = async (req, res) => {
     throw new NotFoundError("Token ne postoji");
   }
 
-  res.status(StatusCodes.OK).json({ message: "Token uspješno izbrisan" });
+  res.status(StatusCodes.NO_CONTENT);
 };
 
 module.exports = {
