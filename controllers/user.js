@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Session = require("../models/Session");
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, UnauthenticatedError } = require("../errors");
 
@@ -7,6 +8,10 @@ const register = async (req, res) => {
 
   const accessToken = user.genereteAccessToken();
   const refreshToken = user.generateRefreshToken();
+
+  await Session.create({
+    session_data: refreshToken,
+  });
 
   res.status(StatusCodes.CREATED).json({
     user: { username: user.username },
@@ -38,6 +43,10 @@ const login = async (req, res) => {
 
   const accessToken = user.genereteAccessToken();
   const refreshToken = user.generateRefreshToken();
+
+  await Session.create({
+    session_data: refreshToken,
+  });
 
   res.status(StatusCodes.OK).json({
     user: { username: user.username },
