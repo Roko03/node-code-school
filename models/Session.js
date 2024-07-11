@@ -14,6 +14,8 @@ const SessionSchema = new mongoose.Schema(
   { versionKey: false }
 );
 
+SessionSchema.index({ expireDate: 1 }, { expireAfterSeconds: 0 });
+
 const SessionModel =
   mongoose.models.Session ||
   mongoose.model("Session", SessionSchema, "session");
