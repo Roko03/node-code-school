@@ -9,7 +9,7 @@ const connectDB = require("./utils/connectDB");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 const notFoundMiddleware = require("./middleware/not-found");
 
-const userRouter = require("./router/user");
+const authRouter = require("./router/auth");
 
 app.use(express.json());
 
@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
   res.json("Ej");
 });
 
-app.use("/api/v1/auth", userRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
