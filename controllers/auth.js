@@ -1,7 +1,13 @@
+require("dotenv").config();
 const User = require("../models/User");
 const Session = require("../models/Session");
 const { StatusCodes } = require("http-status-codes");
-const { BadRequestError, UnauthenticatedError } = require("../errors");
+const {
+  BadRequestError,
+  UnauthenticatedError,
+  CustomAPIError,
+} = require("../errors");
+const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
   const user = await User.create({ ...req.body });
@@ -57,7 +63,44 @@ const login = async (req, res) => {
   });
 };
 
+const updateToken = async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    throw new BadRequestError("Potreban vam je token");
+  }
+
+  const token = await Session.findOne({ session_data: refreshToken });
+
+  if (!token) {
+    throw new UnauthenticatedError("Traženi token ne postoji");
+  }
+
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    async (err, payload) => {
+      if (err) {
+        res
+          .status(StatusCodes.FORBIDDEN)
+          .json({ message: "Ključ nije valjan" });
+      }
+
+      const user = await User.findOne({ _id: payload.userId });
+
+      if (!user) {
+        throw new UnauthenticatedError("Korisnik ne postoji");
+      }
+
+      const accessToken = user.genereteAccessToken();
+
+      res.status(StatusCodes.OK).json({ accessToken });
+    }
+  );
+};
+
 module.exports = {
   register,
   login,
+  updateToken,
 };
