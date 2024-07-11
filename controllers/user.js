@@ -5,11 +5,16 @@ const { BadRequestError, UnauthenticatedError } = require("../errors");
 const register = async (req, res) => {
   const user = await User.create({ ...req.body });
 
-  const token = user.createJWT();
+  const accessToken = user.genereteAccessToken();
+  const refreshToken = user.generateRefreshToken();
 
-  res
-    .status(StatusCodes.CREATED)
-    .json({ user: { username: user.username }, token });
+  res.status(StatusCodes.CREATED).json({
+    user: { username: user.username },
+    token: {
+      accessToken,
+      refreshToken,
+    },
+  });
 };
 
 const login = async (req, res) => {
@@ -31,9 +36,16 @@ const login = async (req, res) => {
     throw new UnauthenticatedError("Netočna šifra");
   }
 
-  const token = user.createJWT();
+  const accessToken = user.genereteAccessToken();
+  const refreshToken = user.generateRefreshToken();
 
-  res.status(StatusCodes.OK).json({ user: { username: user.username }, token });
+  res.status(StatusCodes.OK).json({
+    user: { username: user.username },
+    token: {
+      accessToken,
+      refreshToken,
+    },
+  });
 };
 
 module.exports = {

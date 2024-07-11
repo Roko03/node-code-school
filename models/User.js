@@ -44,15 +44,30 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-UserSchema.methods.createJWT = function () {
+UserSchema.methods.genereteAccessToken = function () {
   return jwt.sign(
     {
       userId: this._id,
+      token_type: "access",
       name: this.name,
     },
-    process.env.JWT_SECRET,
+    process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: `${process.env.JWT_LIFETIME}`,
+      expiresIn: `${process.env.JWT_ACCESS_LIFETIME}`,
+    }
+  );
+};
+
+UserSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      userId: this._id,
+      token_type: "refresh",
+      name: this.name,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: `${process.env.JWT_REFRESH_LIFETIME}`,
     }
   );
 };
