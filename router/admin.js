@@ -9,12 +9,15 @@ const {
   deleteUser,
 } = require("../controllers/admin/user");
 
-const { getAllWorkshops } = require("../controllers/admin/workshop");
+const {
+  getAllWorkshops,
+  makeWorkshop,
+} = require("../controllers/admin/workshop");
 
 router.route("/user").get(getAllUsers).post(makeUser);
 
 router.route("/user/:id").get(getUser).patch(updateUser).delete(deleteUser);
 
-router.route("/workshop").get(getAllWorkshops);
+router.route("/workshop").get(getAllWorkshops).post(makeWorkshop);
 
 module.exports = router;
