@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../errors");
 
 const getAllUsers = async (req, res) => {
   const user = await User.find({}).sort("createdAt");
@@ -27,4 +27,32 @@ const makeUser = async (req, res) => {
     .json({ message: "Korisnik uspješno kreiran", user });
 };
 
-module.exports = { getAllUsers, makeUser, getUser };
+const updateUser = async (req, res) => {
+  const {
+    body: { username, email, password, status },
+    params: { id: userId },
+  } = req;
+
+  if (username === "" || email === "" || password === "") {
+    throw new BadRequestError("Polja trebaju biti popunjena");
+  }
+
+  const user = await User.findByIdAndUpdate(
+    {
+      _id: userId,
+    },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!user) {
+    throw new NotFoundError("Korisnik ne postoji");
+  }
+
+  res.status(StatusCodes.OK).json({ user });
+};
+
+module.exports = { getAllUsers, makeUser, getUser, updateUser };
