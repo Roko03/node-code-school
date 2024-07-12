@@ -19,6 +19,7 @@ const {
 
 const {
   getAllOrganizations,
+  getOrganiation,
   makeOrganization,
 } = require("../controllers/admin/organization");
 
@@ -35,5 +36,7 @@ router
   .delete(deleteWorkshop);
 
 router.route("/organization").get(getAllOrganizations).post(makeOrganization);
+
+router.route("/organization/:id").get(getOrganiation);
 
 module.exports = router;
