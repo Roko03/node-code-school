@@ -17,6 +17,8 @@ const {
   deleteWorkshop,
 } = require("../controllers/admin/workshop");
 
+const { getAllOrganizations } = require("../controllers/admin/organization");
+
 router.route("/user").get(getAllUsers).post(makeUser);
 
 router.route("/user/:id").get(getUser).patch(updateUser).delete(deleteUser);
@@ -28,5 +30,7 @@ router
   .get(getWorkshop)
   .patch(updateWorkshop)
   .delete(deleteWorkshop);
+
+router.route("/organization").get(getAllOrganizations);
 
 module.exports = router;
