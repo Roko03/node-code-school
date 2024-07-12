@@ -6,10 +6,11 @@ const {
   getUser,
   makeUser,
   updateUser,
+  deleteUser,
 } = require("../controllers/admin");
 
 router.route("/user").get(getAllUsers).post(makeUser);
 
-router.route("/user/:id").get(getUser).patch(updateUser);
+router.route("/user/:id").get(getUser).patch(updateUser).delete(deleteUser);
 
 module.exports = router;

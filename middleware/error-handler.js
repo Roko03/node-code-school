@@ -18,6 +18,11 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     customError.message = "Korisnik sa unesenim imenom ili emailom već postoji";
   }
 
+  if (err.name === "CastError") {
+    customError.message = "Ne postoji";
+    customError.statusCode = 404;
+  }
+
   return res
     .status(customError.statusCode)
     .json({ message: customError.message });

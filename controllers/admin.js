@@ -55,4 +55,16 @@ const updateUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ user });
 };
 
-module.exports = { getAllUsers, makeUser, getUser, updateUser };
+const deleteUser = async (req, res) => {
+  const { id: userId } = req.params;
+
+  const user = await User.findByIdAndDelete({ _id: userId });
+
+  if (!user) {
+    throw new NotFoundError("Korisnik ne postoji");
+  }
+
+  res.status(StatusCodes.OK).json({ message: "Korisnik uspješno izbrisan" });
+};
+
+module.exports = { getAllUsers, makeUser, getUser, updateUser, deleteUser };
