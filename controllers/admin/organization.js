@@ -27,4 +27,39 @@ const makeOrganization = async (req, res) => {
     .json({ message: "Organizacija uspješno kreirana", organization });
 };
 
-module.exports = { getAllOrganizations, getOrganiation, makeOrganization };
+const updateOrganization = async (req, res) => {
+  const {
+    body: { name, info },
+    params: { id: organizationId },
+  } = req;
+
+  if (name === "" || info === "") {
+    throw new BadRequestError("Polja trebaju biti popunjena");
+  }
+
+  const organization = await Organization.findByIdAndUpdate(
+    {
+      _id: organizationId,
+    },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!organization) {
+    throw new NotFoundError("Organizacija ne postoji");
+  }
+
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "Uspješno uređeno", organization });
+};
+
+module.exports = {
+  getAllOrganizations,
+  getOrganiation,
+  makeOrganization,
+  updateOrganization,
+};
