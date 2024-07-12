@@ -12,6 +12,8 @@ const notFoundMiddleware = require("./middleware/not-found");
 const authRouter = require("./router/auth");
 const adminRouter = require("./router/admin");
 
+const authenticationUser = require("./middleware/authentication");
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -19,7 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/admin", authenticationUser, adminRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
