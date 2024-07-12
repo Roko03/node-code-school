@@ -1,6 +1,6 @@
-const User = require("../models/User");
+const User = require("../../models/User");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllUsers = async (req, res) => {
   const user = await User.find({}).sort("createdAt");
