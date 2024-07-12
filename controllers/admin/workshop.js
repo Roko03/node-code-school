@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const Workshop = require("../../models/Workshop");
-const { NotFoundError } = require("../../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllWorkshops = async (req, res) => {
   const workshop = await Workshop.find({});
@@ -29,8 +29,43 @@ const makeWorkshop = async (req, res) => {
     .json({ message: "Radionica uspješno kreirana", workshop });
 };
 
+const updateWorkshop = async (req, res) => {
+  const {
+    body: { name, time, user_id, level, subject },
+    params: { id: workshopId },
+  } = req;
+
+  if (
+    name === "" ||
+    time === "" ||
+    user_id === "" ||
+    level === "" ||
+    subject === ""
+  ) {
+    throw new BadRequestError("Polja trebaju biti popunjena");
+  }
+
+  const workshop = await Workshop.findByIdAndUpdate(
+    {
+      _id: workshopId,
+    },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!workshop) {
+    throw new NotFoundError("Radionica ne postoji");
+  }
+
+  res.status(StatusCodes.OK).json({ message: "Uspješno uređeno", workshop });
+};
+
 module.exports = {
   getAllWorkshops,
   getWorkshop,
   makeWorkshop,
+  updateWorkshop,
 };
