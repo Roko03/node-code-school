@@ -11,6 +11,7 @@ const {
 
 const {
   getAllWorkshops,
+  getWorkshop,
   makeWorkshop,
 } = require("../controllers/admin/workshop");
 
@@ -19,5 +20,7 @@ router.route("/user").get(getAllUsers).post(makeUser);
 router.route("/user/:id").get(getUser).patch(updateUser).delete(deleteUser);
 
 router.route("/workshop").get(getAllWorkshops).post(makeWorkshop);
+
+router.route("/workshop/:id").get(getWorkshop);
 
 module.exports = router;
