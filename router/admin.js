@@ -17,7 +17,10 @@ const {
   deleteWorkshop,
 } = require("../controllers/admin/workshop");
 
-const { getAllOrganizations } = require("../controllers/admin/organization");
+const {
+  getAllOrganizations,
+  makeOrganization,
+} = require("../controllers/admin/organization");
 
 router.route("/user").get(getAllUsers).post(makeUser);
 
@@ -31,6 +34,6 @@ router
   .patch(updateWorkshop)
   .delete(deleteWorkshop);
 
-router.route("/organization").get(getAllOrganizations);
+router.route("/organization").get(getAllOrganizations).post(makeOrganization);
 
 module.exports = router;
