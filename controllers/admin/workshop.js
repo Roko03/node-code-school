@@ -63,9 +63,22 @@ const updateWorkshop = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Uspješno uređeno", workshop });
 };
 
+const deleteWorkshop = async (req, res) => {
+  const { id: workshopId } = req.params;
+
+  const workshop = await Workshop.findByIdAndDelete({ _id: workshopId });
+
+  if (!workshop) {
+    throw new NotFoundError("Radionica ne postoji");
+  }
+
+  res.status(StatusCodes.OK).json({ message: "Radionica uspješno izbrisan" });
+};
+
 module.exports = {
   getAllWorkshops,
   getWorkshop,
   makeWorkshop,
   updateWorkshop,
+  deleteWorkshop,
 };
