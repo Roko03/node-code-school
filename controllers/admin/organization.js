@@ -57,9 +57,26 @@ const updateOrganization = async (req, res) => {
     .json({ message: "Uspješno uređeno", organization });
 };
 
+const deleteOrganization = async (req, res) => {
+  const { id: organizationId } = req.params;
+
+  const organization = await Organization.findByIdAndDelete({
+    _id: organizationId,
+  });
+
+  if (!organization) {
+    throw new NotFoundError("Organizacija ne postoji");
+  }
+
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "Organizacija uspješno izbrisan" });
+};
+
 module.exports = {
   getAllOrganizations,
   getOrganiation,
   makeOrganization,
   updateOrganization,
+  deleteOrganization,
 };

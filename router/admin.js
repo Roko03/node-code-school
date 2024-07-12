@@ -22,6 +22,7 @@ const {
   getOrganiation,
   makeOrganization,
   updateOrganization,
+  deleteOrganization,
 } = require("../controllers/admin/organization");
 
 router.route("/user").get(getAllUsers).post(makeUser);
@@ -38,6 +39,10 @@ router
 
 router.route("/organization").get(getAllOrganizations).post(makeOrganization);
 
-router.route("/organization/:id").get(getOrganiation).patch(updateOrganization);
+router
+  .route("/organization/:id")
+  .get(getOrganiation)
+  .patch(updateOrganization)
+  .delete(deleteOrganization);
 
 module.exports = router;
