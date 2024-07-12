@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema(
       ],
       unique: true,
     },
-    passsword: {
+    password: {
       type: String,
       required: [true, "Unesite lozinku"],
       minLength: [6, "Lozinka mora biti duljine od 6 karaktera"],
@@ -40,7 +40,7 @@ const UserSchema = new mongoose.Schema(
 
 UserSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt(10);
-  this.passsword = await bcrypt.hash(this.passsword, salt);
+  this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
@@ -73,7 +73,7 @@ UserSchema.methods.generateRefreshToken = function () {
 };
 
 UserSchema.methods.comparePassword = async function (pwd) {
-  const isMatch = await bcrypt.compare(pwd, this.passsword);
+  const isMatch = await bcrypt.compare(pwd, this.password);
   return isMatch;
 };
 
