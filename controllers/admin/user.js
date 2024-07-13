@@ -4,7 +4,15 @@ const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllUsers = async (req, res) => {
-  const user = await User.find({}).sort("createdAt");
+  const { role } = req.query;
+
+  const queryObject = {};
+
+  if (role) {
+    queryObject.role = role;
+  }
+
+  const user = await User.find(queryObject).sort("createdAt");
   res.status(StatusCodes.OK).json({ user });
 };
 
@@ -73,4 +81,10 @@ const deleteUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Korisnik uspješno izbrisan" });
 };
 
-module.exports = { getAllUsers, makeUser, getUser, updateUser, deleteUser };
+module.exports = {
+  getAllUsers,
+  makeUser,
+  getUser,
+  updateUser,
+  deleteUser,
+};
