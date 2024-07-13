@@ -1,7 +1,12 @@
 const { StatusCodes } = require("http-status-codes");
 const Workshop = require("../../models/Workshop");
 const User = require("../../models/User");
-const { NotFoundError, BadRequestError } = require("../../errors");
+const LoginWorkshop = require("../../models/LoginWorkshop");
+const {
+  NotFoundError,
+  BadRequestError,
+  UnauthenticatedError,
+} = require("../../errors");
 
 const getAllWorkshops = async (req, res) => {
   const workshop = await Workshop.find({})
@@ -80,10 +85,33 @@ const deleteWorkshop = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Radionica uspješno izbrisan" });
 };
 
+const addUserToWorkshop = async (req, res) => {
+  const { id: workshopId, user_id: userId } = req.params;
+
+  const user = await User.findOne({ _id: userId });
+  const workshop = await Workshop.findOne({ _id: workshopId });
+
+  if (!user || !workshop) {
+    throw new NotFoundError("Korisnik ili organizacija ne postoje");
+  }
+
+  if (user.role !== "stu") {
+    throw new UnauthenticatedError("Korisnik nema ulogu studenta");
+  }
+
+  const userWorkshop = await LoginWorkshop.create({
+    user_id: userId,
+    workshop_id: workshopId,
+  });
+
+  res.status(StatusCodes.CREATED).json({ userWorkshop });
+};
+
 module.exports = {
   getAllWorkshops,
   getWorkshop,
   makeWorkshop,
   updateWorkshop,
   deleteWorkshop,
+  addUserToWorkshop,
 };

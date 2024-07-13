@@ -16,6 +16,7 @@ const {
   makeWorkshop,
   updateWorkshop,
   deleteWorkshop,
+  addUserToWorkshop,
 } = require("../controllers/admin/workshop");
 
 const {
@@ -40,6 +41,8 @@ router
   .get(getWorkshop)
   .patch(updateWorkshop)
   .delete(deleteWorkshop);
+
+router.route("/workshop/:id/user/:user_id").post(addUserToWorkshop);
 
 router.route("/organization").get(getAllOrganizations).post(makeOrganization);
 

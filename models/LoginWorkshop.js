@@ -18,6 +18,8 @@ const LoginWorkshopSchema = new mongoose.Schema(
   }
 );
 
+LoginWorkshopSchema.index({ user_id: 1, workshop_id: 1 }, { unique: true });
+
 const LoginWorkshopModel =
   mongoose.models.LoginWorkshop ||
   mongoose.model("LoginWorkshop", LoginWorkshopSchema, "login-workshop");
