@@ -18,6 +18,11 @@ const UserOrganizationSchema = new mongoose.Schema(
   }
 );
 
+UserOrganizationSchema.index(
+  { user_id: 1, organization_id: 1 },
+  { unique: true }
+);
+
 const UserOrganizationModel =
   mongoose.models.UserOrganization ||
   mongoose.model(

@@ -14,8 +14,22 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   }
 
   if (err.code && err.code === 11000) {
+    if (
+      err.keyPattern.user_id === 1 ||
+      err.keyPattern.organization_id === 1 ||
+      err.keyPattern.workshop_id === 1
+    ) {
+      customError.message = "Korisnik već postoji";
+    } else {
+      customError.message =
+        "Korisnik sa unesenim imenom ili emailom već postoji";
+    }
     customError.statusCode = 400;
-    customError.message = "Korisnik sa unesenim imenom ili emailom već postoji";
+  }
+
+  if (err.name === "CastError") {
+    customError.message = "Ne postoji";
+    customError.statusCode = 404;
   }
 
   return res
