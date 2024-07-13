@@ -1,9 +1,12 @@
 const { StatusCodes } = require("http-status-codes");
 const Workshop = require("../../models/Workshop");
+const User = require("../../models/User");
 const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllWorkshops = async (req, res) => {
-  const workshop = await Workshop.find({});
+  const workshop = await Workshop.find({})
+    .lean()
+    .populate("user_id", "_id username email");
   res.status(StatusCodes.OK).json({ workshop });
 };
 
@@ -12,7 +15,9 @@ const getWorkshop = async (req, res) => {
     params: { id: workshopId },
   } = req;
 
-  const workshop = await Workshop.findOne({ _id: workshopId });
+  const workshop = await Workshop.findOne({ _id: workshopId })
+    .lean()
+    .populate("user_id", "_id username email");
 
   if (!workshop) {
     throw new NotFoundError("Radionica ne postoji");
