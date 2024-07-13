@@ -7,6 +7,7 @@ const {
   makeUser,
   updateUser,
   deleteUser,
+  getAllProfessor,
 } = require("../controllers/admin/user");
 
 const {
@@ -27,6 +28,8 @@ const {
 } = require("../controllers/admin/organization");
 
 router.route("/user").get(getAllUsers).post(makeUser);
+
+router.route("/professor").get(getAllProfessor);
 
 router.route("/user/:id").get(getUser).patch(updateUser).delete(deleteUser);
 

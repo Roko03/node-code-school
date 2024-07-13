@@ -81,10 +81,17 @@ const deleteUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Korisnik uspješno izbrisan" });
 };
 
+const getAllProfessor = async (req, res) => {
+  const user = await User.find({ role: "prof" });
+
+  res.status(StatusCodes.OK).json({ user });
+};
+
 module.exports = {
   getAllUsers,
   makeUser,
   getUser,
   updateUser,
   deleteUser,
+  getAllProfessor,
 };
