@@ -1,4 +1,5 @@
 const User = require("../../models/User");
+const UserOrganization = require("../../models/UserOrganization");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 
@@ -15,6 +16,11 @@ const getUser = async (req, res) => {
 
   if (!user) {
     throw new NotFoundError("Korisnik ne postoji");
+  }
+
+  if (user.role === "prof") {
+    let organization = await UserOrganization.find({ user_id: userId });
+    return res.status(StatusCodes.OK).json({ user, organization });
   }
 
   res.status(StatusCodes.OK).json(user);
