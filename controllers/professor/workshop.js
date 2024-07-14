@@ -1,5 +1,11 @@
 const { StatusCodes } = require("http-status-codes");
 const Workshop = require("../../models/Workshop");
+const LoginWorkshop = require("../../models/LoginWorkshop");
+const {
+  NotFoundError,
+  BadRequestError,
+  UnauthenticatedError,
+} = require("../../errors");
 
 const getProfessorWorkshop = async (req, res) => {
   const { _id: user_id } = req.user;
@@ -36,4 +42,24 @@ const getProfessorWorkshop = async (req, res) => {
   res.status(StatusCodes.OK).json({ workshop });
 };
 
-module.exports = { getProfessorWorkshop };
+const getProfessorWorkshopUser = async (req, res) => {
+  const {
+    user: { _id: userId },
+    params: { id: workshopId },
+  } = req;
+
+  const workshop = await Workshop.findOne({ _id: workshopId, user_id: userId });
+
+  if (!workshop) {
+    throw new NotFoundError("Radionica ne postoji");
+  }
+
+  const users = await LoginWorkshop.find({ workshop_id: workshopId })
+    .select("-workshop_id")
+    .lean()
+    .populate("user_id", "_id username email");
+
+  res.status(StatusCodes.OK).json({ users });
+};
+
+module.exports = { getProfessorWorkshop, getProfessorWorkshopUser };
