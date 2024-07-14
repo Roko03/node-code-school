@@ -42,4 +42,20 @@ const getAllWorkshop = async (req, res) => {
   res.status(StatusCodes.OK).json({ workshops });
 };
 
-module.exports = { getStudentWorkshop, getAllWorkshop };
+const joinWorkshop = async (req, res) => {
+  const {
+    user: { _id: userId },
+    params: { id: workshopId },
+  } = req;
+
+  const loginWorkshop = await LoginWorkshop.create({
+    user_id: userId,
+    workshop_id: workshopId,
+  });
+
+  res
+    .status(StatusCodes.CREATED)
+    .json({ message: "Student uspješno prijavljen", loginWorkshop });
+};
+
+module.exports = { getStudentWorkshop, getAllWorkshop, joinWorkshop };
