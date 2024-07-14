@@ -11,6 +11,7 @@ const notFoundMiddleware = require("./middleware/not-found");
 
 const authRouter = require("./router/auth");
 const adminRouter = require("./router/admin");
+const professorRouter = require("./router/professor");
 
 const authenticationUser = require("./middleware/authentication");
 const roleAuthentication = require("./middleware/role-authentication");
@@ -27,6 +28,13 @@ app.use(
   authenticationUser,
   roleAuthentication("adm"),
   adminRouter
+);
+
+app.use(
+  "/api/v1/professor",
+  authenticationUser,
+  roleAuthentication("prof"),
+  professorRouter
 );
 
 app.use(notFoundMiddleware);
