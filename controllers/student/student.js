@@ -7,39 +7,91 @@ const { NotFoundError } = require("../../errors");
 const getStudentWorkshop = async (req, res) => {
   const { _id: userId } = req.user;
 
-  const allWorkshop = await Workshop.find({}).lean();
+  const workshop = await Workshop.aggregate([
+    {
+      $lookup: {
+        from: "login-workshop",
+        localField: "_id",
+        foreignField: "workshop_id",
+        as: "workshop",
+      },
+    },
+    {
+      $match: {
+        "workshop.user_id": { $eq: new mongoose.Types.ObjectId(userId) },
+      },
+    },
+    {
+      $lookup: {
+        from: "user",
+        localField: "user_id",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $unwind: "$user",
+    },
+    {
+      $project: {
+        workshop: 0,
+        createdAt: 0,
+        updatedAt: 0,
+        user_id: 0,
+        "user.createdAt": 0,
+        "user.updatedAt": 0,
+        "user.role": 0,
+        "user.password": 0,
+      },
+    },
+  ]);
 
-  const studentWorkshop = await LoginWorkshop.find({ user_id: userId })
-    .distinct("workshop_id")
-    .lean();
-
-  const stringStudentWorkshop = studentWorkshop.map((item) => item.toString());
-
-  const workshops = allWorkshop.filter((workshop) =>
-    stringStudentWorkshop.includes(workshop._id.toString())
-  );
-
-  res.status(StatusCodes.OK).json({ workshops });
+  res.status(StatusCodes.OK).json({ workshop });
 };
 
 const getAllWorkshop = async (req, res) => {
   const { _id: userId } = req.user;
 
-  const allWorkshop = await Workshop.find({}).lean();
+  const workshop = await Workshop.aggregate([
+    {
+      $lookup: {
+        from: "login-workshop",
+        localField: "_id",
+        foreignField: "workshop_id",
+        as: "workshop",
+      },
+    },
+    {
+      $match: {
+        "workshop.user_id": { $ne: new mongoose.Types.ObjectId(userId) },
+      },
+    },
+    {
+      $lookup: {
+        from: "user",
+        localField: "user_id",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $unwind: "$user",
+    },
+    {
+      $project: {
+        workshop: 0,
+        createdAt: 0,
+        updatedAt: 0,
+        user_id: 0,
+        "user.createdAt": 0,
+        "user.updatedAt": 0,
+        "user.role": 0,
+        "user.password": 0,
+      },
+    },
+  ]);
 
-  const studentWorkshop = await LoginWorkshop.find({
-    user_id: userId,
-  })
-    .distinct("workshop_id")
-    .lean();
-
-  const stringStudentWorkshop = studentWorkshop.map((item) => item.toString());
-
-  const workshops = allWorkshop.filter(
-    (workshop) => !stringStudentWorkshop.includes(workshop._id.toString())
-  );
-
-  res.status(StatusCodes.OK).json({ workshops });
+  res.status(StatusCodes.OK).json({ workshop });
 };
 
 const joinWorkshop = async (req, res) => {
