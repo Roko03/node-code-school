@@ -25,6 +25,9 @@ const getProfessorWorkshop = async (req, res) => {
     },
     {
       $project: {
+        user_id: 0,
+        createdAt: 0,
+        updatedAt: 0,
         numb_of_users: 0,
       },
     },
