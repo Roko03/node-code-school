@@ -62,4 +62,37 @@ const getProfessorWorkshopUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ users });
 };
 
-module.exports = { getProfessorWorkshop, getProfessorWorkshopUser };
+const removeUserFromWorkshop = async (req, res) => {
+  const {
+    user: { _id: professorId },
+    params: { id: workshopId, user_id: userId },
+  } = req;
+
+  const workshop = await Workshop.findOne({
+    _id: workshopId,
+    user_id: professorId,
+  });
+
+  if (!workshop) {
+    throw new NotFoundError("Radionica ne postoji");
+  }
+
+  const user = await LoginWorkshop.findOneAndDelete({
+    workshop_id: workshopId,
+    user_id: userId,
+  });
+
+  if (!user) {
+    throw new NotFoundError("Korisnik ne postoji");
+  }
+
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "Student uspješno izbačen iz radionice" });
+};
+
+module.exports = {
+  getProfessorWorkshop,
+  getProfessorWorkshopUser,
+  removeUserFromWorkshop,
+};
