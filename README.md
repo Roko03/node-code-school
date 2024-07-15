@@ -8,7 +8,9 @@ Includes:
 # Summary
 
 For this project, firstly I need to find best model of folder structure for Node application. 
+
 ![](./public/project-structure.png)
+
 - **Controllers:** Organize route handlers and logic that handle HTTP requests
 - **Errors:** Define API error
 - **Middleware:** Implement middleware functions for tasks
