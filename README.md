@@ -1,5 +1,7 @@
 # Node Code School
 
+![](./public/node-code-school.gif)
+
 Basic Node.JS + Express API project created for [Code school app](https://github.com/Roko03/code-school).
 Includes:
 - Authentication route providing [JWT token](https://jwt.io/)
